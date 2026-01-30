@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { MessageBubble } from './MessageBubble';
 import { ThinkingChain } from './ThinkingChain';
@@ -23,50 +23,7 @@ export function ChatInterface() {
   const [claudeInstalled, setClaudeInstalled] = useState<boolean | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const socketInstance = io('http://localhost:3004', {
-      path: '/ai-orchestrator',
-      transports: ['websocket', 'polling'],
-    });
-
-    socketInstance.on('connect', () => {
-      setIsConnected(true);
-      console.log('Connected to AI Orchestrator');
-    });
-
-    socketInstance.on('disconnect', () => {
-      setIsConnected(false);
-      setIsClaudeConnected(false);
-    });
-
-    socketInstance.on('claude-message', (data) => {
-      handleClaudeMessage(data);
-    });
-
-    socketInstance.on('claude-status', (status) => {
-      setIsClaudeConnected(status.status === 'connected');
-    });
-
-    setSocket(socketInstance);
-
-    return () => {
-      socketInstance.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  useEffect(() => {
-    // Check for Claude CLI on mount
-    fetch('/api/claude-check')
-      .then(res => res.json())
-      .then(data => setClaudeInstalled(data.installed))
-      .catch(() => setClaudeInstalled(false));
-  }, []);
-
-  const handleClaudeMessage = (data: { type: string; content: string }) => {
+  const handleClaudeMessage = useCallback((data: { type: string; content: string }) => {
     // Handle thinking steps
     if (data.type === 'thinking') {
       const newStep: ThinkingStep = {
@@ -101,7 +58,7 @@ export function ChatInterface() {
       };
       setMessages((prev) => [...prev, errorMessage]);
     }
-  };
+  }, [currentThinking]);
 
   const sendMessage = () => {
     if (!input.trim() || !socket) return;
