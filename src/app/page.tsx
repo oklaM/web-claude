@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { io } from 'socket.io-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +26,8 @@ import {
   Clock,
   ChevronRight,
   Power,
-  Settings
+  Settings,
+  MessageSquare
 } from 'lucide-react';
 
 type TerminalMessage = {
@@ -236,6 +238,12 @@ export default function ClaudeCodeControl() {
               {isConnected ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
               <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
             </Badge>
+            <Link href="/chat">
+              <Button variant="default" className="flex items-center space-x-2">
+                <MessageSquare className="h-4 w-4" />
+                <span>Open AI Chat</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
