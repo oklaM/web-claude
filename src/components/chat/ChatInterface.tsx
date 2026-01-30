@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { MessageBubble } from './MessageBubble';
 import { ThinkingChain } from './ThinkingChain';
+import { ErrorMessage } from './ErrorMessage';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
@@ -17,6 +18,7 @@ export function ChatInterface() {
   const [isConnected, setIsConnected] = useState(false);
   const [isClaudeConnected, setIsClaudeConnected] = useState(false);
   const [currentThinking, setCurrentThinking] = useState<ThinkingStep[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,6 +81,8 @@ export function ChatInterface() {
     }
     // Handle errors
     else if (data.type === 'error') {
+      setError(data.content);
+      // Also add to messages as before
       const errorMessage: ChatMessage = {
         id: Date.now().toString(),
         role: 'system',
@@ -136,6 +140,14 @@ export function ChatInterface() {
           </div>
         </div>
       </Card>
+
+      {/* Error Message */}
+      {error && (
+        <ErrorMessage
+          message={error}
+          onDismiss={() => setError(null)}
+        />
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
