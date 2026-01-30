@@ -47,7 +47,8 @@ The application consists of multiple services coordinated via [Caddy](Caddyfile)
 
 1. **Next.js App** (port 3000) - Main web application with App Router
 2. **claude-code-control** (port 3003) - WebSocket service for remote command execution
-3. **Caddy** (port 81) - Reverse proxy with `XTransformPort` query parameter support for routing WebSocket connections
+3. **ai-orchestrator** (port 3004) - WebSocket service for Claude Code CLI integration
+4. **Caddy** (port 81) - Reverse proxy with `XTransformPort` query parameter support for routing WebSocket connections
 
 The Caddy configuration allows the Next.js app to connect to WebSocket services via query parameter: `io('/?XTransformPort=3003')`
 
@@ -88,10 +89,21 @@ The `mini-services/claude-code-control/` service:
 - Provides system status monitoring (CPU, memory, uptime)
 - Defines tasks like `build-project`, `run-tests`, `system-check`
 
+The `mini-services/ai-orchestrator/` service:
+- Runs on port 3004
+- Connects to local Claude Code CLI via child_process
+- Provides WebSocket interface for chat interactions
+- Parses CLI output into structured messages
+
+Usage:
+- Start: `cd mini-services/ai-orchestrator && bun run dev`
+- Socket.IO path: `/ai-orchestrator`
+- Chat UI: Navigate to `/chat` route in Next.js app
+
 When adding new mini-services:
 1. Create a new subdirectory in `mini-services/`
 2. Add `package.json` with `bun`-compatible scripts
-3. Update the build scripts in `.zscripts/mini-services-*.sh`
+3. Build scripts will auto-discover new services (no manual update needed)
 4. Configure Caddy routing if needed
 
 ## Skills System
