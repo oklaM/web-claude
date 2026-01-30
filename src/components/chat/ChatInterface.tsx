@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { MessageBubble } from './MessageBubble';
 import { ThinkingChain } from './ThinkingChain';
 import { ErrorMessage } from './ErrorMessage';
+import { ClaudeNotFound } from './ClaudeNotFound';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
@@ -19,6 +20,7 @@ export function ChatInterface() {
   const [isClaudeConnected, setIsClaudeConnected] = useState(false);
   const [currentThinking, setCurrentThinking] = useState<ThinkingStep[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [claudeInstalled, setClaudeInstalled] = useState<boolean | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,6 +57,14 @@ export function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    // Check for Claude CLI on mount
+    fetch('/api/claude-check')
+      .then(res => res.json())
+      .then(data => setClaudeInstalled(data.installed))
+      .catch(() => setClaudeInstalled(false));
+  }, []);
 
   const handleClaudeMessage = (data: { type: string; content: string }) => {
     // Handle thinking steps
@@ -147,6 +157,11 @@ export function ChatInterface() {
           message={error}
           onDismiss={() => setError(null)}
         />
+      )}
+
+      {/* Claude CLI Not Found */}
+      {claudeInstalled === false && (
+        <ClaudeNotFound />
       )}
 
       {/* Messages */}
