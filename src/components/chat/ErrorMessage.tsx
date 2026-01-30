@@ -1,8 +1,6 @@
 'use client';
 
 import { AlertCircle, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 
 interface ErrorMessageProps {
   message: string;
@@ -11,21 +9,22 @@ interface ErrorMessageProps {
 
 export function ErrorMessage({ message, onDismiss }: ErrorMessageProps) {
   return (
-    <Card className="p-4 bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800">
-      <div className="flex items-start space-x-2">
-        <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-        <div className="flex-1">
-          <p className="text-sm text-red-800 dark:text-red-200">{message}</p>
+    <div className="p-5 bg-gradient-to-br from-red-50 to-orange-50 rounded-[28px] border-2 border-red-200/50 shadow-lg shadow-red-200/30 backdrop-blur-sm">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-[20px] flex items-center justify-center shadow-md flex-shrink-0">
+          <AlertCircle className="text-white" size={20} />
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-bold text-red-900 mb-1">发生错误</h3>
+          <p className="text-sm font-medium text-red-700 leading-relaxed">{message}</p>
+        </div>
+        <button
           onClick={onDismiss}
-          className="flex-shrink-0"
+          className="w-8 h-8 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center text-red-600 transition-colors flex-shrink-0"
         >
-          <X className="h-4 w-4" />
-        </Button>
+          <X size={16} />
+        </button>
       </div>
-    </Card>
+    </div>
   );
 }

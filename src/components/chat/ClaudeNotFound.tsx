@@ -1,27 +1,35 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Terminal } from 'lucide-react';
+import { Terminal, Download } from 'lucide-react';
 import { getClaudeInstallInstructions } from '@/lib/claude-detection';
 
 export function ClaudeNotFound() {
   const instructions = getClaudeInstallInstructions();
 
   return (
-    <Card className="p-6 bg-orange-50 dark:bg-orange-950">
-      <div className="flex items-start space-x-3">
-        <Terminal className="h-6 w-6 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-1" />
+    <div className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-[32px] border-2 border-amber-200/50 shadow-xl shadow-amber-200/30 backdrop-blur-sm">
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-[24px] flex items-center justify-center shadow-lg flex-shrink-0">
+          <Terminal className="text-white" size={24} />
+        </div>
         <div className="flex-1">
-          <h3 className="text-lg font-semibold mb-2">Claude Code CLI Not Found</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            The Claude Code CLI is required for AI chat functionality. Please install it using the instructions below.
+          <h3 className="text-lg font-bold text-amber-900 mb-2">Claude Code CLI 未安装</h3>
+          <p className="text-sm font-medium text-amber-700 mb-4 leading-relaxed">
+            AI 聊天功能需要 Claude Code CLI。请按照以下说明安装：
           </p>
-          <pre className="bg-muted p-4 rounded text-sm overflow-x-auto">
-            <code>{instructions}</code>
-          </pre>
+          <div className="bg-white/80 backdrop-blur-md rounded-[20px] border border-amber-200/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 border-b border-amber-200/50">
+              <div className="flex items-center gap-2">
+                <Download size={14} className="text-amber-700" />
+                <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">安装命令</span>
+              </div>
+            </div>
+            <pre className="p-4 text-sm text-slate-800 overflow-x-auto">
+              <code>{instructions}</code>
+            </pre>
+          </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
